@@ -1,0 +1,14 @@
+{
+  "students": [
+    {
+      "name": "Last,First",
+      "number": 123,
+      "manager": 0,
+      "skeptic": 0,
+      "experimentalist": 0,
+      "archivist": 0,
+      "present_days": 0,
+      "absent_days": 0
+    }
+  ]
+}
