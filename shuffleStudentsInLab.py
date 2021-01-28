@@ -81,37 +81,7 @@ def assignStudentsToGroups():
         students_in_group.append(students.pop())
         students_in_group.append(students.pop())
         students_in_group.append(students.pop())
-        manager = {"manager": 100}
-        experimentalist = {"experimentalist": 100}
-        skeptic = {"skeptic": 100}
-        archivist = {"name": "None", "archivist": 100}
-        for student in students_in_group:
-            if student["manager"] < manager["manager"]:
-                manager = student
-        for student in students_in_group:
-            if (
-                student["experimentalist"] < experimentalist["experimentalist"]
-                and manager != student
-            ):
-                experimentalist = student
-        for student in students_in_group:
-            if (
-                student["skeptic"] < skeptic["skeptic"]
-                and manager != student
-                and experimentalist != student
-            ):
-                skeptic = student
-        for student in students_in_group:
-            if skeptic != student and manager != student and experimentalist != student:
-                archivist = student
-                break
-
-        group = {
-            "manager": manager,
-            "skeptic": skeptic,
-            "experimentalist": experimentalist,
-            "archivist": archivist,
-        }
+        group = createGroup(students_in_group)
         groups.append(group)
 
     for i in range(0, int(num_of_3_groups)):
@@ -120,34 +90,47 @@ def assignStudentsToGroups():
         students_in_group.append(students.pop())
         students_in_group.append(students.pop())
         students_in_group.append(students.pop())
-        manager = {"manager": 100}
-        experimentalist = {"experimentalist": 100}
-        skeptic = {"skeptic": 100}
-        for student in students_in_group:
-            if student["manager"] < manager["manager"]:
-                manager = student
-        for student in students_in_group:
-            if (
-                student["experimentalist"] < experimentalist["experimentalist"]
-                and manager != student
-            ):
-                experimentalist = student
-        for student in students_in_group:
-            if (
-                student["skeptic"] < skeptic["skeptic"]
-                and manager != student
-                and experimentalist != student
-            ):
-                skeptic = student
-
-        group = {
-            "manager": manager,
-            "skeptic": skeptic,
-            "experimentalist": experimentalist,
-            "archivist": {"name": "None", "archivist": 100},
-        }
+        group = createGroup(students_in_group)
         groups.append(group)
     print("Groups Assigned")
+
+
+def createGroup(students_in_group):
+    manager = {"name": "None", "manager": 100}
+    experimentalist = {"name": "None", "experimentalist": 100}
+    skeptic = {"name": "None", "skeptic": 100}
+    archivist = {"name": "None", "archivist": 100}
+    for student in students_in_group:
+        if student["manager"] < manager["manager"]:
+            manager = student
+    for student in students_in_group:
+        if (
+            student["experimentalist"] < experimentalist["experimentalist"]
+            and manager != student
+        ):
+            experimentalist = student
+    for student in students_in_group:
+        if (
+            student["skeptic"] < skeptic["skeptic"]
+            and manager != student
+            and experimentalist != student
+        ):
+            skeptic = student
+
+    if len(students_in_group) == 4:
+        for student in students_in_group:
+            if skeptic != student and manager != student and experimentalist != student:
+                archivist = student
+                break
+
+    group = {
+        "manager": manager,
+        "skeptic": skeptic,
+        "experimentalist": experimentalist,
+        "archivist": archivist,
+    }
+
+    return group
 
 
 def fixGroups():
@@ -284,32 +267,7 @@ def fixGroups():
         students_in_group.append(unassigned_students.pop())
         students_in_group.append(unassigned_students.pop())
         students_in_group.append(unassigned_students.pop())
-        manager = {"manager": 100}
-        experimentalist = {"experimentalist": 100}
-        skeptic = {"skeptic": 100}
-        for student in students_in_group:
-            if student["manager"] < manager["manager"]:
-                manager = student
-        for student in students_in_group:
-            if (
-                student["experimentalist"] < experimentalist["experimentalist"]
-                and manager != student
-            ):
-                experimentalist = student
-        for student in students_in_group:
-            if (
-                student["skeptic"] < skeptic["skeptic"]
-                and manager != student
-                and experimentalist != student
-            ):
-                skeptic = student
-
-        group = {
-            "manager": manager,
-            "skeptic": skeptic,
-            "experimentalist": experimentalist,
-            "archivist": {"name": "None", "archivist": 100},
-        }
+        group = createGroup(students_in_group)
         fixed_groups.append(group)
     elif len(unassigned_students) == 4:
         # create a group of 4
@@ -318,37 +276,7 @@ def fixGroups():
         students_in_group.append(unassigned_students.pop())
         students_in_group.append(unassigned_students.pop())
         students_in_group.append(unassigned_students.pop())
-        manager = {"manager": 100}
-        experimentalist = {"experimentalist": 100}
-        skeptic = {"skeptic": 100}
-        archivist = {"name": "None", "archivist": 100}
-        for student in students_in_group:
-            if student["manager"] < manager["manager"]:
-                manager = student
-        for student in students_in_group:
-            if (
-                student["experimentalist"] < experimentalist["experimentalist"]
-                and manager != student
-            ):
-                experimentalist = student
-        for student in students_in_group:
-            if (
-                student["skeptic"] < skeptic["skeptic"]
-                and manager != student
-                and experimentalist != student
-            ):
-                skeptic = student
-        for student in students_in_group:
-            if skeptic != student and manager != student and experimentalist != student:
-                archivist = student
-                break
-
-        group = {
-            "manager": manager,
-            "skeptic": skeptic,
-            "experimentalist": experimentalist,
-            "archivist": archivist,
-        }
+        group = createGroup(students_in_group)
         fixed_groups.append(group)
 
     groups = fixed_groups
@@ -511,93 +439,3 @@ while True:  # main loop
     else:
         print("invalid command")
         continue
-
-students = [
-    {
-        name: "Last,First",
-        number: 0,  # just for easy identification
-        manager: 0,
-        skeptic: 0,
-        experimentalist: 0,
-        archivist: 0,
-        present_days: 0,
-        absent_days: 0,
-    }
-]
-
-group = {
-    archivist: studentObject,
-    manager: studentObject,
-    skeptic: studentObject,
-    experimentalist: studentObject,
-}
-
-
-# # if we cant repair all groups of 2 destroy them
-# if len(groups_of_2) > len(unassigned_students):
-#     for group in groups_of_2:
-#         fixed_groups.remove(group)
-#         if group["manager"] in active_students:
-#             unassigned_students.append(group["manager"])
-#         elif group["skeptic"] in active_students:
-#             unassigned_students.append(group["skeptic"])
-#         elif group["experimentalist"] in active_students:
-#             unassigned_students.append(group["experimentalist"])
-#         elif group["archivist"] in active_students:
-#             unassigned_students.append(group["archivist"])
-#     groups_of_2 = []
-# # fill in all groups of 2 to make them 3
-# elif len(groups_of_2) > 0 and len(unassigned_students) > 0:
-#     for i in range(0, len(groups_of_2)):
-#         group = groups_of_2[i]
-#         new_member = unassigned_students.pop()
-#         members = [new_member]
-#         if group["manager"] in active_students:
-#             members.append(group["manager"])
-#         if group["skeptic"] in active_students:
-#             members.append(group["skeptic"])
-#         if group["experimentalist"] in active_students:
-#             members.append(group["experimentalist"])
-#         if group["archivist"] in active_students:
-#             members.append(group["archivist"])
-#         # group of 3 logic
-#         manager = {"manager": 100}
-#         experimentalist = {"experimentalist": 100}
-#         skeptic = {"skeptic": 100}
-#         for student in members:
-#             if student["manager"] < manager["manager"]:
-#                 manager = student
-#         for student in members:
-#             if (
-#                 student["experimentalist"] < experimentalist["experimentalist"]
-#                 and manager != student
-#             ):
-#                 experimentalist = student
-#         for student in members:
-#             if (
-#                 student["skeptic"] < skeptic["skeptic"]
-#                 and manager != student
-#                 and experimentalist != student
-#             ):
-#                 skeptic = student
-
-#         group = {
-#             "manager": manager,
-#             "skeptic": skeptic,
-#             "experimentalist": experimentalist,
-#             "archivist": {"name": "None", "archivist": 100},
-#         }
-
-#         print("group of 2 made into group of 3: %s" % group)
-
-#         fixed_groups.append(group)
-
-# if len(groups_of_3) >= len(unassigned_students):
-#     # we can solve this
-#     for group in fixed_groups:
-#         if group["archivist"]["name"] == "None":
-#             student = unassigned_students.pop()
-#             group["archivist"] = student
-#             print("%s assigned to group as archivist" % student["name"])
-#             if len(unassigned_students) == 0:
-#                 break
