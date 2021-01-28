@@ -43,10 +43,12 @@ def listStudents():
         else:
             absent_students.append(student)
 
+    print("")
     print("Present Students (%s)" % len(present_students))
     for student in present_students:
         print(student["name"])
 
+    print("")
     print("Absent Students (%s)" % len(absent_students))
     for student in absent_students:
         print(student["name"])
@@ -301,11 +303,14 @@ def printGroups():
     global groups
     i = 1
     for group in groups:
+        group_message = ""
+        if len(group) < 3:
+            group_message = "(Not Enough Members!)"
         print("")
-        print("Group %s" % i)
+        print("Group %s %s" % i, group_message)
         print("Manager: %s" % group["manager"]["name"])
         print("Experimentalist: %s" % group["experimentalist"]["name"])
-        print("Skeptic: %s" % group["skeptic"]["name"])
+        print("Theorist: %s" % group["skeptic"]["name"])
         print("Archivist: %s" % group["archivist"]["name"])
         i += 1
     unassigned_students = []
@@ -414,7 +419,7 @@ while True:  # main loop
         if selected_student is None:
             print("No student found with that name or number")
             continue
-        # add student back to current groups
+        # add student back to present students
         active_students.append(selected_student)
     elif command == "r":
         # reshuffle groups
