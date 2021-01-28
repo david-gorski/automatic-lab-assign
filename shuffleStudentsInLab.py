@@ -31,6 +31,27 @@ active_students = copy.deepcopy(all_students)
 groups = []
 
 
+def listStudents():
+    global all_students
+    global active_students
+    present_students = []
+    absent_students = []
+
+    for student in all_students:
+        if student in active_students:
+            present_students.append(student)
+        else:
+            absent_students.append(student)
+
+    print("Present Students (%s)" % len(present_students))
+    for student in present_students:
+        print(student["name"])
+
+    print("Absent Students (%s)" % len(absent_students))
+    for student in absent_students:
+        print(student["name"])
+
+
 def assignStudentsToGroups():
     global groups
     groups = []
@@ -421,7 +442,7 @@ def saveAssignments():
 assignStudentsToGroups()  # initially create groups
 while True:  # main loop
     raw = input(
-        "Is someone not here (n) or here now (h), and what is their name or number? Or simply try to fix groups (f), completely reshuffle groups (r), print groups (p), save assignments into json(s), exit (exit)?"
+        "Is someone not here (n) or here now (h), and what is their name? Or simply try to fix groups (f), completely reshuffle groups (r), print a list of students (l), print group assignments (p), save assignments into json (s), exit (exit)?"
     )
     raw = raw.split(" ")
     id = ""
@@ -482,6 +503,8 @@ while True:  # main loop
         printGroups()
     elif command == "f":
         fixGroups()
+    elif command == "l":
+        listStudents()
     elif command == "exit":
         print("bye")
         exit()
