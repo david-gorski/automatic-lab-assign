@@ -100,28 +100,22 @@ def createGroup(students_in_group):
     experimentalist = {"name": "None", "experimentalist": 100}
     skeptic = {"name": "None", "skeptic": 100}
     archivist = {"name": "None", "archivist": 100}
-    for student in students_in_group:
+    students_left_to_assign = copy.deepcopy(students_in_group)
+    for student in students_left_to_assign:
         if student["manager"] < manager["manager"]:
             manager = student
-    for student in students_in_group:
-        if (
-            student["experimentalist"] < experimentalist["experimentalist"]
-            and manager != student
-        ):
+    students_left_to_assign.remove(manager)
+    for student in students_left_to_assign:
+        if student["experimentalist"] < experimentalist["experimentalist"]:
             experimentalist = student
-    for student in students_in_group:
-        if (
-            student["skeptic"] < skeptic["skeptic"]
-            and manager != student
-            and experimentalist != student
-        ):
+    students_left_to_assign.remove(experimentalist)
+    for student in students_left_to_assign:
+        if student["skeptic"] < skeptic["skeptic"]:
             skeptic = student
+    students_left_to_assign.remove(skeptic)
 
     if len(students_in_group) == 4:
-        for student in students_in_group:
-            if skeptic != student and manager != student and experimentalist != student:
-                archivist = student
-                break
+        archivist = students_left_to_assign.pop()
 
     group = {
         "manager": manager,
