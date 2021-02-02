@@ -304,10 +304,14 @@ def printGroups():
     i = 1
     for group in groups:
         group_message = ""
-        if len(group) < 3:
-            group_message = "(Not Enough Members!)"
+        if (
+            group["manager"]["name"] == "None"
+            or group["skeptic"]["name"] == "None"
+            or group["experimentalist"]["name"] == "None"
+        ):
+            group_message = "(Missing Roles!)"
         print("")
-        print("Group %s %s" % i, group_message)
+        print("Group %s %s" % (i, group_message))
         print("Manager: %s" % group["manager"]["name"])
         print("Experimentalist: %s" % group["experimentalist"]["name"])
         print("Theorist: %s" % group["skeptic"]["name"])
