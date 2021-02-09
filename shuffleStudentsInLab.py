@@ -275,6 +275,19 @@ def fixGroups():
         group = createGroup(students_in_group)
         fixed_groups.append(group)
 
+    #assign archivist to needed role
+    for group in fixed_groups:
+        if group["archivist"]["name"] != "None":
+            if group["manager"]["name"] == "None":
+                group["manager"] = group["archivist"]
+                group["archivist"] = {"name": "None"}
+            elif group["skeptic"]["name"] == "None":
+                group["skeptic"] = group["archivist"]
+                group["archivist"] = {"name": "None"}
+            elif group["experimentalist"]["name"] == "None":
+                group["experimentalist"] = group["archivist"]
+                group["archivist"] = {"name": "None"}
+
     groups = fixed_groups
 
     unassigned_students = []
