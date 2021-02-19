@@ -275,7 +275,7 @@ def fixGroups():
         group = createGroup(students_in_group)
         fixed_groups.append(group)
 
-    #assign archivist to needed role
+    # assign archivist to needed role
     for group in fixed_groups:
         if group["archivist"]["name"] != "None":
             if group["manager"]["name"] == "None":
@@ -357,8 +357,98 @@ def printGroups():
             print(student["name"])
 
 
+def swapStudents(id1):
+    global groups
+    selected_student_1 = None
+    for student in all_students:
+        if student["name"] == id or student["number"] == id:
+            selected_student_1 = student
+            break
+    id2 = input("What student are you swapping with?")
+    selected_student_2 = None
+    for student in all_students:
+        if student["name"] == id2 or student["number"] == id2:
+            selected_student_2 = student
+            break
+
+    if selected_student_1 is None or selected_student_2 is None:
+        print("invalid students")
+    else:
+        selected_student_1["swap"] = True
+        selected_student_2["swap"] = True
+        # hasattr(a, 'property')
+        new_groups = copy.deepcopy(groups)
+        swap = 0
+        # swap student 1 with 2
+        for group in new_groups:
+            if group["manager"]["name"] == selected_student_1["name"]:
+                group["manager"] = selected_student_2
+                swap += 1
+                break
+            elif group["skeptic"]["name"] == selected_student_1["name"]:
+                group["skeptic"] = selected_student_2
+                swap += 1
+                break
+            elif group["experimentalist"]["name"] == selected_student_1["name"]:
+                group["experimentalist"] = selected_student_2
+                swap += 1
+                break
+            elif group["archivist"]["name"] == selected_student_1["name"]:
+                group["archivist"] = selected_student_2
+                swap += 1
+                break
+        # swap student 2 with 1
+        for group in new_groups:
+            if (
+                group["manager"]["name"] == selected_student_2["name"]
+                and "swap" not in group["manager"]
+            ):
+                group["manager"] = selected_student_1
+                swap += 1
+                break
+            elif (
+                group["skeptic"]["name"] == selected_student_2["name"]
+                and "swap" not in group["skeptic"]
+            ):
+                group["skeptic"] = selected_student_1
+                swap += 1
+                break
+            elif (
+                group["experimentalist"]["name"] == selected_student_2["name"]
+                and "swap" not in group["experimentalist"]
+            ):
+                group["experimentalist"] = selected_student_1
+                swap += 1
+                break
+            elif (
+                group["archivist"]["name"] == selected_student_2["name"]
+                and "swap" not in group["archivist"]
+            ):
+                group["archivist"] = selected_student_1
+                swap += 1
+                break
+        if swap == 2:
+            # delete the swap attribute
+            for group in new_groups:
+                if hasattr(group["manager"], "swap"):
+                    del group["manager"]["swap"]
+                if hasattr(group["skeptic"], "swap"):
+                    del group["skeptic"]["swap"]
+                if hasattr(group["experimentalist"], "swap"):
+                    del group["experimentalist"]["swap"]
+                if hasattr(group["archivist"], "swap"):
+                    del group["archivist"]["swap"]
+            groups = new_groups
+        else:
+            print("at least one of these students wasn't actually assigned")
+
+
+did_save = False
+
+
 def saveAssignments():
     global groups
+    global did_save
     for group in groups:
         for student in all_students:
             if group["manager"]["name"] == student["name"]:
@@ -381,12 +471,13 @@ def saveAssignments():
             student["absent_days"] += 1
     with open(filepath, "w+") as json_file:
         json.dump({"students": all_students}, json_file)
+    did_save = True
 
 
 assignStudentsToGroups()  # initially create groups
 while True:  # main loop
     raw = input(
-        "Is someone not here (n) or here now (h), and what is their name? Or simply try to fix groups (f), completely reshuffle groups (r), print a list of students (l), print group assignments (p), save assignments into json (s), exit (exit)?"
+        "Is someone not here (n) or here now (h), and what is their name? Or simply try to fix groups (f), completely reshuffle groups (r), print a list of students (l), print group assignments (p), save assignments into json (save), swap student assignments (x), exit (exit)?"
     )
     raw = raw.split(" ")
     id = ""
@@ -438,11 +529,15 @@ while True:  # main loop
             continue
         # add student back to present students
         active_students.append(selected_student)
+    elif command == "x":
+        swapStudents(id)
     elif command == "r":
         # reshuffle groups
         assignStudentsToGroups()
-    elif command == "s":
-        saveAssignments()
+    elif command == "save":
+        answer = input("Are you sure you're ready to save? (yes/no)")
+        if answer == "yes":
+            saveAssignments()
     elif command == "p":
         printGroups()
     elif command == "f":
@@ -450,8 +545,16 @@ while True:  # main loop
     elif command == "l":
         listStudents()
     elif command == "exit":
-        print("bye")
-        exit()
+        if did_save:
+            print("bye")
+            exit()
+        else:
+            answer = input(
+                "You haven't saved yet, are you sure you want to exit? (yes/no)"
+            )
+            if answer == "yes":
+                print("bye")
+                exit()
     else:
         print("invalid command")
         continue
